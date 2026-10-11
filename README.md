@@ -7,6 +7,12 @@
 Architectural Overview
 The architecture is deployed inside a custom Amazon VPC spanning two distinct Availability Zones. Public-facing traffic enters through an Application Load Balancer (ALB) residing in public subnets across both AZs. The ALB distributes incoming requests to two backend Amazon EC2 web server instances, each placed in a separate Availability Zone and protected by dedicated security groups.<br>
 
+
+<br>
+<br>
+![Architecture Design](screenshots/AD.png)
+
+
 Network & Infrastructure Specifications<br>
 
 
