@@ -33,9 +33,14 @@ The architecture is deployed inside a custom Amazon VPC spanning two distinct Av
 
 ## Problem 2
 
+![Instance Setup](./screenshots/ins-1.jpg)
+
 Two EC2 instances are launched in separate Availability Zones (us-east-1a and us-east-1b). A bootstrap User Data script configures a lightweight Node.js/Python web server on startup.
 
 - EC2 User Data Script: located in the `config` folder as `user-data.sh`.
+
+![Bootstrap Script](./screenshots/bootstap.jpg)
+
 - Security Verification: Because the EC2 security group only allows ingress on port 80 sourced from `sg-alb`, attempting to access the EC2 public IP directly from a user browser or local machine will time out.
 
 ---
@@ -44,7 +49,18 @@ Two EC2 instances are launched in separate Availability Zones (us-east-1a and us
 
 ### Configure the Load Balancer
 
-An Internet-facing Application Load Balancer (`my-alb`) is provisioned across both public subnets. An HTTP listener on port 80 forwards incoming traffic to a Target Group containing both EC2 instances.
+* Target group creation
+
+![Target Group Setup](./screenshots/tg-1.jpg)
+![Target Group Health Checks](./screenshots/tg-2.jpg)
+![Target Group Registration](./screenshots/tg-3.jpg)
+![Target Group Status](./screenshots/tg-4.jpg)
+
+An Internet-facing Application Load Balancer (`alb-ostad`) is provisioned across both public subnets. An HTTP listener on port 80 forwards incoming traffic to a Target Group containing both EC2 instances.
+
+![ALB Overview](./screenshots/alb-1.jpg)
+![ALB Listener Configuration](./screenshots/alb-2.jpg)
+![ALB Target Group](./screenshots/alb-3.jpg)
 
 ### Request Verification (T2 Test Script)
 
