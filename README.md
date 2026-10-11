@@ -61,13 +61,18 @@ Sending 10 consecutive requests via curl to the ALB DNS name(./config/check-alb.
 ## Problem 4
 Implement Proper Health Checks
 Target Group Health Check Configuration & Justifications
-Protocol / Path (/health): A dedicated lightweight endpoint that returns a 200 OK JSON response without executing heavy computations or database calls.
-Interval (10s / default 30s): The time between health check requests. Set shorter during labs for rapid state transition validation.
-Timeout (5s): The maximum time to wait for a response from an instance before marking the check as failed.
-Healthy Threshold (2): The number of consecutive successful health checks required before an unhealthy instance is marked healthy and returned to rotation.
-Unhealthy Threshold (2): The number of consecutive failed health checks required before an instance is taken out of rotation.
-Active vs. Passive Health Checks
-Active Health Checks: Proactive background probes sent by the load balancer at regular intervals (used by AWS ALB).
-Passive Health Checks: Monitoring actual client traffic and error rates to determine instance health on the fly.
-Selected Implementation: AWS ALB exclusively uses active health checks via its configured Target Group settings.
 
+* Protocol / Path (/health): A dedicated lightweight endpoint that returns a 200 OK JSON response without executing heavy computations or database calls.
+* Interval (10s / default 30s): The time between health check requests. Set shorter during labs for rapid state transition validation.
+* Timeout (5s): The maximum time to wait for a response from an instance before marking the check as failed.
+* Healthy Threshold (2): The number of consecutive successful health checks required before an unhealthy instance is marked healthy and returned to rotation.
+* Unhealthy Threshold (2): The number of consecutive failed health checks required before an instance is taken out of rotation.
+<br>
+Active vs. Passive Health Checks
+<br>
+* Active Health Checks: Proactive background probes sent by the load balancer at regular intervals (used by AWS ALB).
+* Passive Health Checks: Monitoring actual client traffic and error rates to determine instance health on the fly.
+* Selected Implementation: AWS ALB exclusively uses active health checks via its configured Target Group settings.
+
+
+---
