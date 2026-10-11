@@ -94,3 +94,14 @@ T5 – Recovery	Start the us-east-1a instance again (aws ec2 start-instances ...
 
 T6 – Logs / Monitoring	Inspect ALB Access Logs in Amazon S3 or CloudWatch Target metrics (RequestCount, HTTPCode_Target_2XX_Count).	Metrics and logs confirm incoming client requests reaching both registered targets.
 
+
+
+
+# Problem 6
+
+AWS ALB vs. NGINX
+AWS ALB is a fully managed cloud service that offers seamless scaling, native integration with AWS IAM, security groups, and certificate management (ACM), eliminating underlying OS maintenance. However, it incurs hourly charges and creates cloud vendor lock-in. NGINX provides immense flexibility, zero licensing costs for self-hosted environments, and deep rule customization, but requires manual provisioning for high availability, patching, and scaling.
+Handling Load Balancer Single Points of Failure (SPOF)
+If the ALB itself failed, ingress traffic would be completely blocked. In a real production architecture, this single point of failure is mitigated by deploying the ALB across multiple Availability Zones with built-in AWS elastic scaling, and fronting it with Amazon Route 53 DNS Failover or an AWS Network Load Balancer (NLB) for multi-region or multi-tier redundancy.
+Troubleshooting Challenge
+A notable challenge encountered during setup was a 504 Gateway Time-out error when testing requests through the ALB. Inspection revealed that the EC2 security group (sg-ec2) was missing an inbound rule allowing HTTP traffic from the ALB security group (sg-alb). Resolving this rule allowed the ALB health checks and user traffic to successfully reach the backend web servers.
