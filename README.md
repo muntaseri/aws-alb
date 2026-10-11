@@ -10,7 +10,7 @@ The architecture is deployed inside a custom Amazon VPC spanning two distinct Av
 
 <br>
 <br>
-![Architecture Design](screenshots/AD.png)
+![Architecture Design](./screenshots/AD.png)
 
 
 Network & Infrastructure Specifications<br>
