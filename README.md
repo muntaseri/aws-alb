@@ -10,9 +10,10 @@ The architecture is deployed inside a custom Amazon VPC spanning two distinct Av
 
 <br>
 <br>
-![Architecture Design](./screenshots/AD.png)
+---
+![Architecture Design] (./screenshots/AD.png)
 
-
+---
 Network & Infrastructure Specifications<br>
 
 
@@ -31,4 +32,16 @@ Application Load Balancer (ALB): Acts as the single entry point, distributing cl
 Target Group: Routes requests to registered EC2 instances and performs active health monitoring.<br>
 EC2 Instances: Compute nodes running the web server application within isolated AZ subnets.<br>
 
+
+
+
+
+# Problem 2
+
+Two EC2 instances are launched in separate Availability Zones (us-east-1a and us-east-1b). A bootstrap User Data script configures a lightweight Node.js/Python web server on startup.
+<br>
+
+EC2 User Data Script (user-data.sh) attached on config folder
+<br>
+---
 
