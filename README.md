@@ -8,10 +8,9 @@ Architectural Overview
 The architecture is deployed inside a custom Amazon VPC spanning two distinct Availability Zones. Public-facing traffic enters through an Application Load Balancer (ALB) residing in public subnets across both AZs. The ALB distributes incoming requests to two backend Amazon EC2 web server instances, each placed in a separate Availability Zone and protected by dedicated security groups.<br>
 
 
-<br>
-<br>
+
 ---
-![Architecture Design] (./screenshots/AD.png)
+(.screenshots/ad.png)
 
 ---
 Network & Infrastructure Specifications<br>
@@ -67,12 +66,31 @@ Target Group Health Check Configuration & Justifications
 * Timeout (5s): The maximum time to wait for a response from an instance before marking the check as failed.
 * Healthy Threshold (2): The number of consecutive successful health checks required before an unhealthy instance is marked healthy and returned to rotation.
 * Unhealthy Threshold (2): The number of consecutive failed health checks required before an instance is taken out of rotation.
-<br>
+
 Active vs. Passive Health Checks
-<br>
+
 * Active Health Checks: Proactive background probes sent by the load balancer at regular intervals (used by AWS ALB).
 * Passive Health Checks: Monitoring actual client traffic and error rates to determine instance health on the fly.
 * Selected Implementation: AWS ALB exclusively uses active health checks via its configured Target Group settings.
 
 
 ---
+
+# Problem 5
+Failure Testing and Proof of Work
+
+
+
+Test ID	Action Taken	Expected Outcome
+T1 – Health Status	Navigate to EC2 Console \rightarrow Target Groups \rightarrow Targets tab.	Both instances show status Healthy.
+
+T2 – Load Distribution	Execute loop of 10 curl requests against the ALB DNS endpoint.	Responses alternate between Instance 1 and Instance 2.
+
+T3 – Browser Test	Open the ALB DNS URL in a browser and hit refresh multiple times.	Page content updates dynamically between AZ-A and AZ-B instances.
+
+T4 – AZ Failure	Stop the EC2 instance in us-east-1a (aws ec2 stop-instances ...), then send requests.	Instance marked Unhealthy in Target Group; 100% of requests route to us-east-1b with zero client errors.
+
+T5 – Recovery	Start the us-east-1a instance again (aws ec2 start-instances ...).	Instance passes health checks, and traffic automatically resumes balancing across both nodes.
+
+T6 – Logs / Monitoring	Inspect ALB Access Logs in Amazon S3 or CloudWatch Target metrics (RequestCount, HTTPCode_Target_2XX_Count).	Metrics and logs confirm incoming client requests reaching both registered targets.
+
