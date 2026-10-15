@@ -157,13 +157,13 @@ Target Group Health Check Configuration & Justifications:
 
 | Test ID | Action Taken | Expected Outcome |
 | --- | --- | --- |
-| T1 – Health Status | Navigate to EC2 Console → Target Groups → Targets tab. | (./screenshots/t1.jpg) |
-| T2 – Load Distribution | Execute loop of 10 curl requests against the ALB DNS endpoint. | (./screenshots/t2.jpg) |
-| T3 – Browser Test | Open the ALB DNS URL in a browser and hit refresh multiple times. | (./screenshots/t3-1.jpg) (./screenshots/t3-2.jpg) |
-| T4 – AZ Failure | Stop the EC2 instance in us-east-1a (`aws ec2 stop-instances ...`), then send requests. | (./screenshots/t4-1.jpg)(./screenshots/t4-2.jpg) |
-| T5 – Recovery | Start the us-east-1a instance again (`aws ec2 start-instances ...`). | (./screenshots/t5-1.jpg)(./screenshots/t5-2.jpg) |
+| T1 – Health Status | Navigate to EC2 Console → Target Groups → Targets tab. | ![T1](./screenshots/t1.jpg) |
+| T2 – Load Distribution | Execute loop of 10 curl requests against the ALB DNS endpoint. | ![T2](./screenshots/t2.jpg) |
+| T3 – Browser Test | Open the ALB DNS URL in a browser and hit refresh multiple times. | ![T3](./screenshots/t3-1.jpg) ![T3](./screenshots/t3-2.jpg) |
+| T4 – AZ Failure | Stop the EC2 instance in us-east-1a (`aws ec2 stop-instances ...`), then send requests. | ![T4](./screenshots/t4-1.jpg)![T4](./screenshots/t4-2.jpg) |
+| T5 – Recovery | Start the us-east-1a instance again (`aws ec2 start-instances ...`). | ![T5](./screenshots/t5-1.jpg)![T5](./screenshots/t5-2.jpg) |
 | T6 – Logs / Monitoring | Inspect ALB Access Logs in Amazon S3 or CloudWatch Target metrics (`RequestCount`, `HTTPCode_Target_2XX_Count`). | ![Cloud watch Log](./screenshots/cw-1.jpg)  
- |
+ 
 
 ---
 
@@ -179,4 +179,5 @@ If the ALB itself failed, ingress traffic would be completely blocked. In a real
 
 ### Troubleshooting Challenge
 
+![Problem](./screenshots/trouble-1.jpg)
 A notable challenge encountered during setup was a `504 Gateway Time-out` error when testing requests through the ALB. Inspection revealed that the EC2 security group (`sg-ec2`) was missing an inbound rule allowing HTTP traffic from the ALB security group (`sg-alb`). Resolving this rule allowed the ALB health checks and user traffic to successfully reach the backend web servers.
