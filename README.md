@@ -180,4 +180,4 @@ If the ALB itself failed, ingress traffic would be completely blocked. In a real
 ### Troubleshooting Challenge
 
 ![Problem](./screenshots/trouble-1.jpg)
-A notable challenge encountered during setup was a `504 Gateway Time-out` error when testing requests through the ALB. Inspection revealed that the EC2 security group (`sg-ec2`) was missing an inbound rule allowing HTTP traffic from the ALB security group (`sg-alb`). Resolving this rule allowed the ALB health checks and user traffic to successfully reach the backend web servers.
+A notable challenge encountered during setup was a `503 Service Temporarily Unavailable ` error when testing requests through the ALB. Inspection revealed that the EC2 security group (`sg-ec2`) was missing an inbound rule allowing HTTP traffic from the ALB security group (`sg-alb`). Resolving this rule allowed the ALB health checks and user traffic to successfully reach the backend web servers.
