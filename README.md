@@ -66,7 +66,70 @@ An Internet-facing Application Load Balancer (`alb-ostad`) is provisioned across
 
 Sending 10 consecutive requests via `curl` to the ALB DNS name using the script in `./config/check-alb.sh`.
 
+![ALB test screenshot](./screenshots/t5-2.jpg)
+
 ---
+
+## ALB Access Logs and CloudWatch Metrics
+
+To monitor traffic patterns, debug requests, and track target health in real time, enable ALB access logs (stored in Amazon S3) and view CloudWatch metrics.
+
+
+### Enable ALB Access Logs
+
+Access logs capture detailed information about requests sent to your Application Load Balancer.
+
+#### Create an S3 Bucket
+
+1. Open the Amazon S3 Console and click Create bucket.
+2. Provide a unique bucket name (e.g., my-alb-access-logs-bucket-2026).
+3. Ensure the region matches your ALB deployment region.
+
+![S3 creation](./screenshots/s3-1.jpg)
+
+#### Enable Logging on the ALB
+
+1. Navigate to **EC2 Console > Load Balancers**.
+2. Select your Application Load Balancer.
+3. In the bottom detail pane, click the Attributes tab, then click Edit.
+![Edit ALB attirbutes](./screenshots/log-1.jpg)
+
+
+4. Check the box for Access logs.
+5. Enter your S3 bucket name (and optional prefix).
+6. Click Save changes.
+![Edit ALB attirbutes](./screenshots/log-2.jpg)
+
+> **Note:** Ensure your S3 bucket policy allows the AWS ELB service account for your region to write log objects.
+
+### View ALB and Target Metrics in CloudWatch
+
+AWS automatically publishes metrics for your Application Load Balancer and Target Groups to CloudWatch without requiring manual agent installation.
+
+1. Open the CloudWatch Console.
+2. In the left navigation menu, click **Metrics > All metrics**.
+3. Select the App/Net.LB namespace, then choose Per Target Group Metrics.
+4. Monitor these essential metrics:
+   - `RequestCount`: Total number of requests processed by the load balancer.
+   - `HTTPCode_Target_2XX_Count`: Number of successful responses returned by backend instances.
+   - `UnHealthyHostCount`: Number of instances currently failing health checks.
+   - `HealthyHostCount`: Number of active, healthy instances in rotation.
+  
+![Cloud watch Log](./screenshots/cw-1.jpg)  
+
+### Bash Testing Script
+
+To test load balancer distribution, use the script in [`./config/check-alb.sh`](./config/check-alb.sh). It sends 10 requests and prints each response on its own line:
+
+```bash
+echo "Enter ALB DNS Name"
+read ALB_DNS
+
+for i in {1..10}; do
+  curl -s "http://$ALB_DNS/health"
+  echo
+done
+```
 
 ## Problem 4
 
@@ -94,12 +157,13 @@ Target Group Health Check Configuration & Justifications:
 
 | Test ID | Action Taken | Expected Outcome |
 | --- | --- | --- |
-| T1 – Health Status | Navigate to EC2 Console → Target Groups → Targets tab. | Both instances show status Healthy. |
-| T2 – Load Distribution | Execute loop of 10 curl requests against the ALB DNS endpoint. | Responses alternate between Instance 1 and Instance 2. |
-| T3 – Browser Test | Open the ALB DNS URL in a browser and hit refresh multiple times. | Page content updates dynamically between AZ-A and AZ-B instances. |
-| T4 – AZ Failure | Stop the EC2 instance in us-east-1a (`aws ec2 stop-instances ...`), then send requests. | Instance marked Unhealthy in Target Group; 100% of requests route to us-east-1b with zero client errors. |
-| T5 – Recovery | Start the us-east-1a instance again (`aws ec2 start-instances ...`). | Instance passes health checks, and traffic automatically resumes balancing across both nodes. |
-| T6 – Logs / Monitoring | Inspect ALB Access Logs in Amazon S3 or CloudWatch Target metrics (`RequestCount`, `HTTPCode_Target_2XX_Count`). | Metrics and logs confirm incoming client requests reaching both registered targets. |
+| T1 – Health Status | Navigate to EC2 Console → Target Groups → Targets tab. | (./screenshots/t1.jpg) |
+| T2 – Load Distribution | Execute loop of 10 curl requests against the ALB DNS endpoint. | (./screenshots/t2.jpg) |
+| T3 – Browser Test | Open the ALB DNS URL in a browser and hit refresh multiple times. | (./screenshots/t3-1.jpg) (./screenshots/t3-2.jpg) |
+| T4 – AZ Failure | Stop the EC2 instance in us-east-1a (`aws ec2 stop-instances ...`), then send requests. | (./screenshots/t4-1.jpg)(./screenshots/t4-2.jpg) |
+| T5 – Recovery | Start the us-east-1a instance again (`aws ec2 start-instances ...`). | (./screenshots/t5-1.jpg)(./screenshots/t5-2.jpg) |
+| T6 – Logs / Monitoring | Inspect ALB Access Logs in Amazon S3 or CloudWatch Target metrics (`RequestCount`, `HTTPCode_Target_2XX_Count`). | ![Cloud watch Log](./screenshots/cw-1.jpg)  
+ |
 
 ---
 
